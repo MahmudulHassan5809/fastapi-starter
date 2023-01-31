@@ -18,7 +18,7 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    DATABASE_URI: Optional[str] = "sqlite+aiosqlite:///test.db"
+    DATABASE_URI: Optional[str] = "sqlite+aiosqlite:///database.db"
     FIRST_SUPERUSER: EmailStr = "admin@gmail.com"
 
     class Config:
