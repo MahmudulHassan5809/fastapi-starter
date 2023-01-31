@@ -1,8 +1,6 @@
 from fastapi import APIRouter
-from fastapi import Depends
-from sqlalchemy.future import select
-from src.db.db_session import get_session
-from sqlalchemy.ext.asyncio import AsyncSession
+from src.core.config import settings
+from src.schemas.health_check import HealthCheck
 
 router = APIRouter(
     prefix="/health-check",
@@ -10,15 +8,12 @@ router = APIRouter(
 )
 
 
-@router.get("/")
-def read_root():
-    return {"Hello": "World"}
+@router.get("/", response_model=HealthCheck)
+async def health_check():
+   return {
+       "name": settings.PROJECT_NAME,
+       "version": settings.VERSION,
+       "description": settings.DESCRIPTION
+    }
 
 
-@router.get("/songs")
-async def get_songs(session: AsyncSession = Depends(get_session)):
-    result = await session.execute("SELECT * FROM test")
-    print(result)
-    songs = result.scalars().all()
-    print(songs)
-    return [songs]
