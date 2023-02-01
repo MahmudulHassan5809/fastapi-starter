@@ -7,6 +7,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlmodel import SQLModel 
 from src.core.config import settings
+from src.accounts.models import User
 
 from alembic import context
 
