@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends
 from src.accounts.models import UserCreate, UserRead, UserUpdate
 from src.accounts.crud import CRUDUser
 from src.accounts.dependencies import get_user_crud
+from src.core.schemas.common import PaginatedResponse
+from src.core.dependencies.param_dependency import CommonParam
 
 router = APIRouter(prefix="/admin")
 
@@ -14,9 +16,12 @@ async def create_user(
     return await user.create(data=data)
 
 
-@router.get("/users", response_model=list[UserRead])
-async def get_user(user: CRUDUser = Depends(get_user_crud)):
-    return await user.list()
+@router.get("/users", response_model=PaginatedResponse[UserRead])
+async def get_user(
+    user: CRUDUser = Depends(get_user_crud),
+    commons: dict = Depends(CommonParam(filter_fields=["name"]))
+):
+    return await user.list(commons)
 
 
 @router.get("/users/{id}", response_model=UserRead)

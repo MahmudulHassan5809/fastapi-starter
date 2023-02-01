@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from src.core.config import settings
-from src.schemas.health_check import HealthCheck
+from src.core.schemas.health_check import HealthCheck
 
 router = APIRouter(
     prefix="/health-check",
