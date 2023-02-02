@@ -32,7 +32,9 @@ class MetaDataAdderMiddlewareResponder:
             self.initial_message = message
 
         elif message_type == "http.response.body":
+            print(message, message["body"], '------------------------')
             response_body = json.loads(message["body"].decode())
+            print(response_body, '----------------------------')
             data = {}
             if self.initial_message['status'] in [200, 201, 204]:
                 data["success"] = True
