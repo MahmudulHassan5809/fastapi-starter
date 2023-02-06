@@ -5,6 +5,7 @@ from sqlmodel import Field, SQLModel
 class UserBase(SQLModel):
     name: str
     email: str
+    username: str = Field(unique=True)
     phone_number: Optional[str] = None
 
     class Config:
@@ -20,10 +21,11 @@ class UserBase(SQLModel):
 
 class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    password: str
 
 
 class UserCreate(UserBase):
-    pass
+    password: str
 
 
 class UserRead(UserBase):

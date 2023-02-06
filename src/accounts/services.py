@@ -1,14 +1,20 @@
-from src.accounts.models import UserCreate, UserUpdate
-from src.accounts.crud import CRUDUser
-from src.core.schemas.common import QueryParam
 from fastapi import HTTPException
 from fastapi import status as http_status
+
+
+from src.accounts.models import UserCreate, UserUpdate
+from src.accounts.crud import CRUDUser
+from src.accounts.utils import verify, hash
+from src.accounts.oauth2 import create_access_token
+from src.core.schemas.common import QueryParam
 
 class UserService():
     def __init__(self, user_crud: CRUDUser):
         self.crud = user_crud
 
     async def create_user(self, data: UserCreate):
+        hashed_password = hash(data.password)
+        data.password = hashed_password
         return await self.crud.create(data)
     
     async def user_list(self, queryParam: QueryParam):
@@ -22,6 +28,21 @@ class UserService():
                 detail="The user hasn't been found!"
             )
         return res
+    
+    async def login(self, user_credentials: any):
+        res = await self.crud.get('username', user_credentials.username)
+        if not res:
+            raise HTTPException(
+                status_code=http_status.HTTP_404_NOT_FOUND,
+                detail="The user hasn't been found!"
+            )
+
+        if not verify(user_credentials.password, res.password):
+            raise HTTPException(status_code=http_status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
+        
+
+        access_token = create_access_token(data = {"user_id" : res.id})
+        return {"access_token" : access_token}
     
     async def update_user(self, id: int, data: UserUpdate):
         instance = await self.get_single_user(id)

@@ -1,8 +1,8 @@
 """add user
 
-Revision ID: 4d41fdf13817
+Revision ID: ad11e5702eca
 Revises: 
-Create Date: 2023-02-01 13:02:46.437966
+Create Date: 2023-02-06 16:48:54.200010
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '4d41fdf13817'
+revision = 'ad11e5702eca'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,9 +22,12 @@ def upgrade() -> None:
     op.create_table('user',
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('email', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('username', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('phone_number', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('password', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('username')
     )
     # ### end Alembic commands ###
 

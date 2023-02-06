@@ -25,6 +25,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         statement = select(self.model).where(self.model.id == id)
         results = await self.session.execute(statement=statement)
         return results.scalar_one_or_none()
+    
+
+    async def get(self, filter_field: any, filter_value: any) -> Optional[ModelType]:
+        filter_field = getattr(self.model, filter_field)
+        statement = select(self.model).where(filter_field == filter_value)
+        results = await self.session.execute(statement=statement)
+        return results.scalar_one_or_none()
+
 
     async def list(self, queryParam: QueryParam) -> List[ModelType]:
         offset = (queryParam.page - 1) * queryParam.offset_limit

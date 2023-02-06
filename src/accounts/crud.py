@@ -20,6 +20,11 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     async def get_by_id(self, id: int) -> Optional[User]:
         res = await super().get_by_id(id)
         return res
+    
+
+    async def get(self, filter_field: any, field_value: any) -> Optional[User]:
+        res = await super().get(filter_field, field_value)
+        return res
 
     async def update_by_id(self, instance: User, data: UserUpdate) -> Optional[User]:
         return await super().update_by_id(id, instance, data)

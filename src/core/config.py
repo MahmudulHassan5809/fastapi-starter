@@ -10,6 +10,9 @@ class Settings(BaseSettings):
 
     DATABASE_URI: str
     SUPER_USER_EMAIL: EmailStr
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     class Config:
         case_sensitive = True
