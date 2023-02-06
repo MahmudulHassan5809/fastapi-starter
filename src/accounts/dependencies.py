@@ -17,4 +17,4 @@ async def get_user_service(
         user_crud: CRUDUser = Depends(get_user_crud)
 ) -> UserService:
 
-        return UserService(user_crud=user_crud)
+    return UserService(user_crud=user_crud)
