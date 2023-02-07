@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from starlette.requests import Request
 from starlette.middleware.cors import CORSMiddleware
 from src.core.config import settings
 from src.core.middleware.response_middleware import CustomResponseMiddleware
+from src.core.middleware.error_handler_middleware import CustomErrorHandler
 from src.api.router import api_router
 
 app = FastAPI(
@@ -31,3 +33,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+app.middleware("http")(CustomErrorHandler())

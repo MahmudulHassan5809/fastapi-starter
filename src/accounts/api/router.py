@@ -10,10 +10,15 @@ api_router = APIRouter()
 include_api = api_router.include_router
 
 routers = (
-    (admin_router, "accounts", "Admin Accounts"),
-    (auth_router, "authentication", "Accounts Authentication"),
+    (admin_router, "accounts", "Admin Accounts", "private"),
+    (auth_router, "authentication", "Accounts Authentication", "public"),
 )
 
 for router_item in routers:
-   router, prefix, tag = router_item
-   include_api(router, prefix=f"/{prefix}", tags=[tag],) #  dependencies=[Depends(JWTBearer())],
+	router, prefix, tag, api_type = router_item
+
+	if api_type == "private":
+		include_api(router, prefix=f"/{prefix}", tags=[tag], dependencies=[Depends(JWTBearer())]) 
+	else:
+		include_api(router, prefix=f"/{prefix}", tags=[tag],)
+	
