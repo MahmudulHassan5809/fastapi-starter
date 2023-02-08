@@ -9,4 +9,4 @@ python src/db/db_check.py
 alembic upgrade head
 
 # Create initial data in DB
-# python ./app/initial_data.py
+python src/seeders/create_super_user.py

@@ -1,5 +1,7 @@
+import enum
 from pydantic.types import Optional
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Enum, Column
+from src.core.helpers.type_choices import UserStatusType
 
 
 class UserBase(SQLModel):
@@ -7,6 +9,9 @@ class UserBase(SQLModel):
     email: str
     username: str = Field(unique=True)
     phone_number: Optional[str] = None
+    is_superuser: bool = Field(default=False)
+    is_staff: bool = Field(default=False)
+    type: UserStatusType = Field(sa_column=Column(Enum(UserStatusType)))
 
     class Config:
         schema_extra = {
