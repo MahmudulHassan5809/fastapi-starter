@@ -1,6 +1,8 @@
 import logging
-from typing import Optional, AsyncIterator
+from collections.abc import AsyncIterator
+
 from sqlalchemy.ext import asyncio as sa
+
 from src.core.config import Settings
 
 logger = logging.getLogger(__name__)
@@ -9,7 +11,7 @@ logger = logging.getLogger(__name__)
 class Database:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
-        self._engine: Optional[sa.AsyncEngine] = None
+        self._engine: sa.AsyncEngine | None = None
 
     async def create_engine(self) -> AsyncIterator[sa.AsyncEngine]:
         logger.debug("Initializing SQLAlchemy engine")

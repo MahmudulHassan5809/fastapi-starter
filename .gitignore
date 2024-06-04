@@ -55,6 +55,6 @@ venv
 test.db
 database.db
 .env
-.venv 
+.venv
 .pytest_cache
 .mypy_cache
