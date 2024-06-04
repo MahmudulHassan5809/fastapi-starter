@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "fastapi-starter"
+version = "0.1.0"
+description = "FastApi Starter."
+authors = ["MahmudulHassan5809 <mahmudul.hassan240@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.10.0"
+pre-commit = "^3.7.1"
+pytest = "^8.2.2"
+black = "^24.4.2"
+faker = "^25.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
