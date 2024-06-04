@@ -1,25 +1,25 @@
 import logging
-import typing
+from typing import Optional, AsyncIterator
 from sqlalchemy.ext import asyncio as sa
-from .settings import Settings
+from src.core.config import Settings
 
 logger = logging.getLogger(__name__)
 
 
 class Database:
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings) -> None:
         self.settings = settings
-        self._engine = None
+        self._engine: Optional[sa.AsyncEngine] = None
 
-    async def create_engine(self) -> typing.AsyncIterator[sa.AsyncEngine]:
+    async def create_engine(self) -> AsyncIterator[sa.AsyncEngine]:
         logger.debug("Initializing SQLAlchemy engine")
         self._engine = sa.create_async_engine(
-            url=self.settings.db_dsn,
-            echo=self.settings.debug,
-            echo_pool=self.settings.debug,
-            pool_size=self.settings.db_pool_size,
-            pool_pre_ping=self.settings.db_pool_pre_ping,
-            max_overflow=self.settings.db_max_overflow,
+            url=self.settings.DB_DSN,
+            echo=self.settings.DEBUG,
+            echo_pool=self.settings.DEBUG,
+            pool_size=self.settings.DB_POOL_SIZE,
+            pool_pre_ping=self.settings.DB_POOL_PRE_PING,
+            max_overflow=self.settings.DB_MAX_OVERFLOW,
         )
         logger.debug("SQLAlchemy engine has been initialized")
         try:
@@ -30,12 +30,12 @@ class Database:
 
     async def get_engine(self) -> sa.AsyncEngine:
         if not self._engine:
-            # We ensure to create the engine only once and use it across the app's lifecycle
             async for engine in self.create_engine():
                 self._engine = engine
+        assert self._engine is not None  # Ensure that self._engine is not None
         return self._engine
 
-    async def get_session(self) -> typing.AsyncIterator[sa.AsyncSession]:
+    async def get_session(self) -> AsyncIterator[sa.AsyncSession]:
         engine = await self.get_engine()
         async with sa.AsyncSession(
             engine, expire_on_commit=False, autoflush=False
