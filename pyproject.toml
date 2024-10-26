@@ -7,6 +7,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+fastapi = {extras = ["standard"], version = "^0.115.3"}
+pydantic-settings = "^2.6.0"
+redis = "^5.2.0"
+stackprinter = "^0.2.12"
+sqlalchemy = "^2.0.36"
+bcrypt = "^4.2.0"
+dependency-injector = "^4.42.0"
+requests = "^2.32.3"
+python-ulid = "^3.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
