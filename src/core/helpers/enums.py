@@ -6,3 +6,8 @@ class ProfileStatusEnum(str, Enum):
     IN_ACTIVE = "IN_ACTIVE"
     RESTRICTED = "RESTRICTED"
     PENDING = "PENDING"
+
+
+class GenderEnum(str, Enum):
+    MALE = "MALE"
+    FEMALE = "FEMALE"
