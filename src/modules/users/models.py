@@ -1,6 +1,8 @@
 from datetime import date, datetime
-from sqlalchemy.orm import Mapped, mapped_column
+
 from sqlalchemy import TIMESTAMP, Date, String
+from sqlalchemy.orm import Mapped, mapped_column
+
 from src.core.helpers.enums import ProfileStatusEnum
 from src.core.models import BaseModel
 
@@ -18,6 +20,6 @@ class User(BaseModel):
     )
     is_staff: Mapped[bool] = mapped_column(default=False, nullable=True)
     is_superuser: Mapped[bool] = mapped_column(default=False, nullable=True)
-    email: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     last_logged_in_at: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=True)
     password: Mapped[str] = mapped_column(String(150), nullable=False)

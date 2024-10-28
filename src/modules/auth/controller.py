@@ -2,10 +2,11 @@
 from typing import Any
 
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
+
 from src.core.di import Container
-from src.modules.auth.service import AuthService
 from src.modules.auth.schemas import TokenResponse, UserRegister
+from src.modules.auth.service import AuthService
 
 router = APIRouter(prefix="")
 

@@ -2,7 +2,7 @@
 from collections.abc import Callable, Sequence
 from typing import Any, Generic
 
-from sqlalchemy import Select, and_, func, select, text
+from sqlalchemy import Select, and_, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -56,14 +56,19 @@ class BaseRepository(Generic[ModelType]):
         filters: dict[str, Any],
         sorting: dict[str, str] | None = None,
         prefetch: tuple[str, ...] | None = None,
+        use_or: bool = False,
     ) -> Sequence[ModelType]:
         query = self._get_query(prefetch)
         if sorting is not None:
             query = query.order_by(*self._build_sorting(sorting))
+
+        condition = (
+            or_(*self._build_filters(filters))
+            if use_or
+            else and_(*self._build_filters(filters))
+        )
         async with self.session() as session:
-            db_execute = await session.execute(
-                query.where(and_(True, *self._build_filters(filters)))
-            )
+            db_execute = await session.execute(query.where(condition))
             result = db_execute.scalars().all()
         return result
 
@@ -81,14 +86,19 @@ class BaseRepository(Generic[ModelType]):
         filters: dict[str, Any],
         sorting: dict[str, str] | None = None,
         prefetch: tuple[str, ...] | None = None,
+        use_or: bool = False,
     ) -> ModelType | None:
         query = self._get_query(prefetch)
         async with self.session() as session:
             if sorting is not None:
                 query = query.order_by(*self._build_sorting(sorting))
-            result_cursor = await session.execute(
-                query.where(and_(True, *self._build_filters(filters)))
+
+            condition = (
+                or_(*self._build_filters(filters))
+                if use_or
+                else and_(*self._build_filters(filters))
             )
+            result_cursor = await session.execute(query.where(condition))
             result = result_cursor.scalars().first()
 
         return result

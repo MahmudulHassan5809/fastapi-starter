@@ -21,7 +21,7 @@ class FastAPIApp:
         self.app = FastAPI(
             title="Gold Kinen APP",
             description="Gold Kinen APP",
-            version=settings.APP_VERSION,
+            version=settings.VERSION,
             debug=settings.DEBUG,
             docs_url=None if settings.APP_ENV == "prod" else "/docs",
             redoc_url=None if settings.APP_ENV == "prod" else "/redoc",
@@ -46,7 +46,7 @@ class FastAPIApp:
         return Container()
 
     def init_routers(self) -> None:
-        self.app.include_router(api_router, prefix=f"/api/{settings.APP_VERSION}")
+        self.app.include_router(api_router, prefix=f"/api/{settings.VERSION}")
 
     def init_cache(self) -> None:
         Cache.init(backend=RedisBackend(url=settings.REDIS_URL))
