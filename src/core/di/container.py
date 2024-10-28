@@ -5,12 +5,14 @@ from src.core.db.connector import Database
 from src.modules.auth.service import AuthService
 from src.modules.users.models import User
 from src.modules.users.repository import UserRepository
+from src.modules.users.services import UserService
 
 
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
             "src.modules.auth.controller",
+            "src.modules.users.controllers.user",
         ]
     )
     db = providers.Resource(
@@ -22,3 +24,4 @@ class Container(containers.DeclarativeContainer):
         UserRepository, session_factory=db.provided.session, model=User
     )
     auth_service = providers.Factory(AuthService, user_repository=user_repository)
+    user_service = providers.Factory(UserService, user_repository=user_repository)
