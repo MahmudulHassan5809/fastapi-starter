@@ -3,7 +3,7 @@ from enum import Enum
 
 class ProfileStatusEnum(str, Enum):
     ACTIVE = "ACTIVE"
-    IN_ACTIVE = "IN_ACTIVE"
+    INACTIVE = "INACTIVE"
     RESTRICTED = "RESTRICTED"
     PENDING = "PENDING"
 

@@ -6,14 +6,14 @@ from src.core.helpers.enums import GenderEnum
 
 
 class AuthBase(BaseModel):
-    phone: str
+    email: str
     password: str
 
 
 class UserRegister(AuthBase):
     name: str
     dob: date
-    email: str
+    phone: str
     gender: GenderEnum
 
 
@@ -33,3 +33,7 @@ class RefreshTokenPayload(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
+
+
+class UserLogin(AuthBase):
+    pass

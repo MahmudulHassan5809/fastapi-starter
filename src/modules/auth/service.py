@@ -1,6 +1,6 @@
 from src.core.cache import Cache, CacheTag
 from src.core.config import settings
-from src.core.error.codes import USER_EXISTS
+from src.core.error.codes import USER_EXISTS, INVALID_USER, INVALID_CRED
 from src.core.error.exceptions import ValidationException
 from src.core.error.format_error import ERROR_MAPPER
 from src.core.helpers.enums import ProfileStatusEnum
@@ -11,6 +11,7 @@ from src.modules.auth.schemas import (
     RefreshTokenPayload,
     TokenResponse,
     UserRegister,
+    UserLogin,
 )
 from src.modules.users.models import User
 from src.modules.users.repository import UserRepository
@@ -87,4 +88,38 @@ class AuthService(BaseService):
             tokens=tokens,
         )
 
+        return tokens
+
+    async def login(self, data: UserLogin) -> TokenResponse:
+        user = await self.user_repository.get_by_field(
+            filters={"email": data.email},
+        )
+        if not user or (user and user.status == ProfileStatusEnum.INACTIVE):
+            raise ValidationException(errors=ERROR_MAPPER[INVALID_USER])
+
+        if not PasswordHandler.verify_password(
+            plain_password=data.password, hashed_password=user.password
+        ):
+            raise ValidationException(errors=ERROR_MAPPER[INVALID_CRED])
+
+        access_token = JWTHandler.encode(
+            token_type="access",
+            payload=AccessTokenPayload(
+                user_id=user.id,
+                email=user.email,
+            ),
+        )
+        refresh_token = JWTHandler.encode(
+            token_type="refresh",
+            payload=RefreshTokenPayload(
+                user_id=user.id,
+            ),
+        )
+
+        tokens = TokenResponse(access_token=access_token, refresh_token=refresh_token)
+        await self.set_cache(
+            user_id=user.id,
+            user_profile=UserProfile(**user.to_dict()),
+            tokens=tokens,
+        )
         return tokens

@@ -5,7 +5,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
 from src.core.di import Container
-from src.modules.auth.schemas import TokenResponse, UserRegister
+from src.modules.auth.schemas import TokenResponse, UserRegister, UserLogin
 from src.modules.auth.service import AuthService
 
 router = APIRouter(prefix="")
@@ -18,3 +18,12 @@ async def validate_otp_register(
     auth_service: AuthService = Depends(Provide[Container.auth_service]),
 ) -> Any:
     return await auth_service.register(data)
+
+
+@router.post("/login/", response_model=TokenResponse)
+@inject
+async def login(
+    data: UserLogin,
+    auth_service: AuthService = Depends(Provide[Container.auth_service]),
+) -> Any:
+    return await auth_service.login(data=data)
