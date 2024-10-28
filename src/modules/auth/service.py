@@ -1,6 +1,6 @@
 from src.core.cache import Cache, CacheTag
 from src.core.config import settings
-from src.core.error.codes import USER_EXISTS, INVALID_USER, INVALID_CRED
+from src.core.error.codes import INVALID_CRED, INVALID_USER, USER_EXISTS
 from src.core.error.exceptions import ValidationException
 from src.core.error.format_error import ERROR_MAPPER
 from src.core.helpers.enums import ProfileStatusEnum
@@ -10,12 +10,13 @@ from src.modules.auth.schemas import (
     AccessTokenPayload,
     RefreshTokenPayload,
     TokenResponse,
-    UserRegister,
     UserLogin,
+    UserRegister,
 )
 from src.modules.users.models import User
 from src.modules.users.repository import UserRepository
 from src.modules.users.schemas import UserProfile
+from src.worker import send_email
 
 
 class AuthService(BaseService):
@@ -86,6 +87,14 @@ class AuthService(BaseService):
             user_id=created_user.id,
             user_profile=UserProfile(**created_user.to_dict()),
             tokens=tokens,
+        )
+
+        html_content = self.templates.get_template("email/welcome.html").render()
+        send_email.delay(
+            subject="Welcome to FastAPI",
+            to_email=data.email,
+            html_str=html_content,
+            text="Welcome to FastAPI",
         )
 
         return tokens

@@ -5,7 +5,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
 from src.core.di import Container
-from src.modules.auth.schemas import TokenResponse, UserRegister, UserLogin
+from src.modules.auth.schemas import TokenResponse, UserLogin, UserRegister
 from src.modules.auth.service import AuthService
 
 router = APIRouter(prefix="")

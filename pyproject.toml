@@ -19,6 +19,8 @@ python-ulid = "^3.0.0"
 psycopg = {extras = ["binary"], version = "^3.2.3"}
 alembic = "^1.13.3"
 pyjwt = "^2.9.0"
+celery = "^5.4.0"
+sendgrid = "^6.11.0"
 
 
 [tool.poetry.group.dev.dependencies]

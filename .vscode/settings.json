@@ -5,6 +5,7 @@
         "hgetall",
         "hmset",
         "levelno",
+        "SENDGRID",
         "setex",
         "sqlalchemy",
         "stackprinter"
