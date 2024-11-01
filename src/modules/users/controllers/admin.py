@@ -8,7 +8,8 @@ from src.core.dependencies.get_current_user import get_current_user
 from src.core.di import Container
 from src.core.permissions.enums import UserPermission
 from src.modules.users.models import User
-from src.modules.users.services import UserService
+from src.modules.users.schemas import StaffCreate
+from src.modules.users.services import AdminUserService
 
 router = APIRouter(prefix="")
 
@@ -17,8 +18,11 @@ router = APIRouter(prefix="")
 @inject
 @check_permission(UserPermission.CREATE)
 async def profile(
-    request: Request,
-    user_service: UserService = Depends(Provide[Container.user_service]),
-    user: User = Depends(get_current_user),
+    _request: Request,
+    data: StaffCreate,
+    admin_user_service: AdminUserService = Depends(
+        Provide[Container.admin_user_service]
+    ),
+    _user: User = Depends(get_current_user),
 ) -> Any:
-    user_id = request.state.user["user_id"]
+    return await admin_user_service.create_staff(data=data)

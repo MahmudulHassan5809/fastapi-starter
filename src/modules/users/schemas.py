@@ -17,5 +17,9 @@ class UserProfile(BaseModel):
 
 class AdminUserProfile(UserProfile):
     group: UserGroup
-    is_staff: bool
-    is_superuser: bool
+    is_staff: bool = True
+    is_superuser: bool = False
+
+
+class StaffCreate(AdminUserProfile):
+    password: str
