@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from src.core.db import ModelType, operators_map
+from src.core.schemas.common import PaginationParams
 
 
 class BaseRepository(Generic[ModelType]):
@@ -71,6 +72,39 @@ class BaseRepository(Generic[ModelType]):
             db_execute = await session.execute(query.where(condition))
             result = db_execute.scalars().all()
         return result
+
+    async def paginate_filter(
+        self,
+        filters: dict[str, Any],
+        pagination: PaginationParams | None = None,
+        sorting: dict[str, str] | None = None,
+        prefetch: tuple[str, ...] | None = None,
+        use_or: bool = False,
+    ) -> tuple[Sequence[ModelType], int]:
+        query = self._get_query(prefetch)
+        if sorting is not None:
+            query = query.order_by(*self._build_sorting(sorting))
+
+        condition = (
+            or_(*self._build_filters(filters))
+            if use_or
+            else and_(*self._build_filters(filters))
+        )
+
+        async with self.session() as session:
+            total_query = select(func.count()).select_from(
+                query.where(condition).subquery()
+            )
+            total = await session.scalar(total_query) or 0
+
+            # Apply pagination if provided
+            if pagination:
+                query = query.offset(pagination.skip).limit(pagination.page_size)
+
+            db_execute = await session.execute(query.where(condition))
+            result = db_execute.scalars().all()
+
+        return result, total
 
     async def get_by_id(
         self, obj_id: str, prefetch: tuple[str, ...] | None = None

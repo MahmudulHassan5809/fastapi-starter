@@ -26,7 +26,11 @@ class ResponseMiddleware(BaseHTTPMiddleware):
                 "success": (response.status_code // 100) not in (4, 5)
             }
             if data["success"]:
-                data["data"] = response_json
+                data["data"] = (
+                    response_json["data"]
+                    if response_json.get("data")
+                    else response_json
+                )
                 data["message"] = "OK"
             else:
                 data["message"] = (
@@ -38,7 +42,7 @@ class ResponseMiddleware(BaseHTTPMiddleware):
                 data["data"] = None
 
             data["code"] = response.status_code
-            data["meta_info"] = None
+            data["meta_info"] = response_json.get("meta", {})
             modified_response = json.dumps(data).encode("utf-8")
             response.headers["Content-Length"] = str(len(modified_response))
             return Response(
