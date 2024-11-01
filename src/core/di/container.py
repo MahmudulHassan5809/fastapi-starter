@@ -5,7 +5,7 @@ from src.core.db.connector import Database
 from src.modules.auth.service import AuthService
 from src.modules.users.models import User
 from src.modules.users.repository import UserRepository
-from src.modules.users.services import UserService
+from src.modules.users.services import AdminUserService, UserService
 
 
 class Container(containers.DeclarativeContainer):
@@ -13,6 +13,7 @@ class Container(containers.DeclarativeContainer):
         modules=[
             "src.modules.auth.controller",
             "src.modules.users.controllers.user",
+            "src.modules.users.controllers.admin",
         ]
     )
     db = providers.Resource(
@@ -25,3 +26,7 @@ class Container(containers.DeclarativeContainer):
     )
     auth_service = providers.Factory(AuthService, user_repository=user_repository)
     user_service = providers.Factory(UserService, user_repository=user_repository)
+
+    admin_user_service = providers.Factory(
+        AdminUserService, user_repository=user_repository
+    )

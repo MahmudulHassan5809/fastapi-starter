@@ -1,6 +1,7 @@
 import json
 from datetime import date, datetime
 from decimal import Decimal
+from enum import Enum
 from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel
@@ -20,4 +21,6 @@ class CustomJSONEncoder(Generic[T], json.JSONEncoder):
             return o.to_dict()
         if isinstance(o, BaseModel):
             return o.model_dump()
+        if isinstance(o, Enum):
+            return str(o.value)
         return str(super().default(o))

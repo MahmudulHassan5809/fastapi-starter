@@ -1,10 +1,12 @@
 from datetime import date, datetime
 
-from sqlalchemy import TIMESTAMP, Date, String
+from sqlalchemy import TIMESTAMP, Date, Enum, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.helpers.enums import ProfileStatusEnum
 from src.core.models import BaseModel
+from src.core.permissions.acl import Allow
+from src.core.permissions.enums import UserGroup, UserPermission
 
 
 class User(BaseModel):
@@ -23,3 +25,35 @@ class User(BaseModel):
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     last_logged_in_at: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=True)
     password: Mapped[str] = mapped_column(String(150), nullable=False)
+    group: Mapped[UserGroup] = mapped_column(
+        Enum(UserGroup), default=UserGroup.BASIC, nullable=True
+    )
+
+    def __acl__(self) -> list[tuple[Allow, str | int, list[UserPermission]]]:
+        permissions = {
+            UserGroup.BASIC: [UserPermission.READ],
+            UserGroup.STAFF: [UserPermission.READ, UserPermission.CREATE],
+            UserGroup.MANAGER: [UserPermission.READ, UserPermission.EDIT],
+            UserGroup.SUPER_ADMIN: list(UserPermission),
+        }
+
+        user_permissions = permissions.get(self.group, [])
+
+        if self.group is None:
+            return [
+                (
+                    Allow("anonymous", []),
+                    self.id,
+                    [],
+                ),
+            ]
+
+        user_permissions = permissions.get(self.group, [])
+        return [
+            (Allow(self.group.value, user_permissions), self.id, user_permissions),
+            (
+                Allow("self", [UserPermission.EDIT, UserPermission.CREATE]),
+                self.id,
+                [UserPermission.EDIT, UserPermission.CREATE],
+            ),
+        ]

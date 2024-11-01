@@ -15,7 +15,7 @@ from src.modules.auth.schemas import (
 )
 from src.modules.users.models import User
 from src.modules.users.repository import UserRepository
-from src.modules.users.schemas import UserProfile
+from src.modules.users.schemas import AdminUserProfile, UserProfile
 from src.worker import send_email
 
 
@@ -25,7 +25,10 @@ class AuthService(BaseService):
         self.user_repository: UserRepository = user_repository
 
     async def set_cache(
-        self, user_id: str, user_profile: UserProfile, tokens: TokenResponse
+        self,
+        user_id: str,
+        user_profile: UserProfile | AdminUserProfile,
+        tokens: TokenResponse,
     ) -> None:
         user_data_key = CacheTag.USER_DATA.value.format(user_id=user_id)
         user_access_token_key = CacheTag.USER_ACCESS_TOKEN.value.format(user_id=user_id)
@@ -128,7 +131,11 @@ class AuthService(BaseService):
         tokens = TokenResponse(access_token=access_token, refresh_token=refresh_token)
         await self.set_cache(
             user_id=user.id,
-            user_profile=UserProfile(**user.to_dict()),
+            user_profile=(
+                UserProfile(**user.to_dict())
+                if not user.is_staff
+                else AdminUserProfile(**user.to_dict())
+            ),
             tokens=tokens,
         )
         return tokens

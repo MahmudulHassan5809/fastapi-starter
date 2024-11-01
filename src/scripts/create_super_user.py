@@ -1,10 +1,14 @@
-import os
 import asyncio
+import os
+
 from sqlalchemy import select
+
 from src.core.db import Database
+from src.core.helpers.enums import ProfileStatusEnum
+from src.core.logger import logger
+from src.core.permissions.enums import UserGroup
 from src.core.security import PasswordHandler
 from src.modules.users.models import User
-from src.core.helpers.enums import ProfileStatusEnum
 
 # Retrieve database URL from environment variable
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -28,7 +32,7 @@ async def create_superuser() -> None:
         result = await session.execute(select(User).where(User.email == email))
         existing_user = result.scalars().first()
         if existing_user:
-            print("A superuser with this email already exists.")
+            logger.info("A superuser with this email already exists.")
             return
 
         superuser = User(
@@ -42,11 +46,12 @@ async def create_superuser() -> None:
             email=email,
             last_logged_in_at=None,
             password=hashed_password,
+            group=UserGroup.SUPER_ADMIN,
         )
 
         session.add(superuser)
         await session.commit()
-        print("Superuser created successfully!")
+        logger.info("Superuser created successfully!")
 
 
 # Run the script

@@ -1,5 +1,5 @@
-from src.core.service.base import BaseService
 from src.core.cache import Cache, CacheTag
+from src.core.service.base import BaseService
 from src.modules.users.repository import UserRepository
 from src.modules.users.schemas import UserProfile
 

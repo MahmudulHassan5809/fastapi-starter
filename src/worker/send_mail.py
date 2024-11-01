@@ -1,8 +1,9 @@
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 from src.core.config import settings
 from src.core.logger import logger
 from src.worker.celery_app import celery
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 
 
 @celery.task(name="send_email")
@@ -21,9 +22,6 @@ def send_email(
     )
     try:
         sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
-        response = sg.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        sg.send(message)
     except Exception as e:  # pylint: disable=broad-except
         logger.error("Error sending email: %s", str(e))
