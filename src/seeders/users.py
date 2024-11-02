@@ -13,6 +13,7 @@ async def seed_user_data(session: AsyncSession) -> None:
             password=PasswordHandler.hash("123456"),
             email="johndoe@example.com",
             status="ACTIVE",
+            dob="1994-04-07",
         ),
         User(
             name="Jane Doe",
@@ -21,6 +22,7 @@ async def seed_user_data(session: AsyncSession) -> None:
             password=PasswordHandler.hash("123456"),
             email="janedoe@example.com",
             status="ACTIVE",
+            dob="1994-04-07",
         ),
     ]
 

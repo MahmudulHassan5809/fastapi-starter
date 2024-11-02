@@ -178,7 +178,9 @@ The project includes a robust test suite for unit and integration testing.
 1. **Run all tests**:
 
    ```bash
-   poetry run pytest
+   bash src/scripts/create_test_db.py
+   python src/seeders/main.py
+   pytest -s
    ```
 
 2. **Pre-commit hooks**:
