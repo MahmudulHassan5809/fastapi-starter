@@ -14,7 +14,7 @@ A comprehensive template to kickstart your FastAPI project with best practices, 
 - **Integrated Testing** using Pytest.
 
 ## Project Structure
-
+```
 .
 ├── .vscode/                     # VSCode workspace settings for this project
 ├── migrations/                  # Database migrations using Alembic
@@ -57,7 +57,7 @@ A comprehensive template to kickstart your FastAPI project with best practices, 
 ├── docker-compose.yml           # Docker Compose configuration for services
 ├── pyproject.toml               # Poetry configuration for dependencies
 └── README.md                    # Project documentation
-
+```
 
 ## Getting Started
 
