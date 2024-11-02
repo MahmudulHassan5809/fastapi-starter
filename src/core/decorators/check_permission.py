@@ -5,8 +5,7 @@ from typing import Any
 from fastapi import Depends, HTTPException, status
 
 from src.core.dependencies.get_current_user import get_current_user
-from src.core.permissions.acl import ACL
-from src.core.permissions.enums import UserPermission
+from src.core.permissions import ACL, UserPermission
 from src.modules.users.models import User
 
 
@@ -19,11 +18,13 @@ def check_permission(
             *args: Any, user: User = Depends(get_current_user), **kwargs: Any
         ) -> Any:
             acl = ACL(user.__acl__())
+
             if user.is_superuser:
                 return await func(*args, user=user, **kwargs)
 
             if not user.group or not acl.is_allowed(
-                user.group.value, user.id, permission
+                user.group.value,
+                permission,
             ):
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,

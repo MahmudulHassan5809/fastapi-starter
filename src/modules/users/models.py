@@ -5,8 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.helpers.enums import ProfileStatusEnum
 from src.core.models import BaseModel
-from src.core.permissions.acl import Allow
-from src.core.permissions.enums import UserGroup, UserPermission
+from src.core.permissions import Allow, UserGroup, UserPermission
 
 
 class User(BaseModel):
@@ -29,7 +28,7 @@ class User(BaseModel):
         Enum(UserGroup), default=UserGroup.BASIC, nullable=True
     )
 
-    def __acl__(self) -> list[tuple[Allow, str | int, list[UserPermission]]]:
+    def __acl__(self) -> Allow:
         permissions = {
             UserGroup.BASIC: [UserPermission.READ],
             UserGroup.STAFF: [UserPermission.READ, UserPermission.CREATE],
@@ -47,13 +46,4 @@ class User(BaseModel):
                     [],
                 ),
             ]
-
-        user_permissions = permissions.get(self.group, [])
-        return [
-            (Allow(self.group.value, user_permissions), self.id, user_permissions),
-            (
-                Allow("self", [UserPermission.EDIT, UserPermission.CREATE]),
-                self.id,
-                [UserPermission.EDIT, UserPermission.CREATE],
-            ),
-        ]
+        return Allow(self.group.value, user_permissions)

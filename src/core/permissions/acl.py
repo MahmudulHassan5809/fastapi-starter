@@ -1,5 +1,3 @@
-from collections.abc import Sequence
-
 from src.core.permissions.enums import UserPermission
 
 
@@ -10,21 +8,19 @@ class Allow:
 
 
 class ACL:
-    def __init__(
-        self, permissions: Sequence[tuple[Allow, str | int, list[UserPermission]]]
-    ):
-        self.permissions = permissions
+    def __init__(self, allow: Allow):
+        self.allowed_permissions = allow.permissions
+        self.allowed_group = allow.role
 
     def is_allowed(
-        self, role: str, user_id: str | int, permission: UserPermission
+        self,
+        role: str,
+        permission: UserPermission,
     ) -> bool:
         if not role:
             return False
-        for allow, principal, perms in self.permissions:
-            if allow.role == role and permission in perms:
-                return True
 
-            if principal == user_id and permission in perms:
-                return True
+        if self.allowed_group == role and permission in self.allowed_permissions:
+            return True
 
         return False
