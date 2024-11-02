@@ -8,8 +8,8 @@ include_api = api_router.include_router
 
 
 routers = (
+    (user_admin_router, "users/admin", "User Admin Private Route", "private"),
     (user_router, "users", "User Private Route", "private"),
-    (user_admin_router, "admin/users", "User Admin Private Route", "private"),
 )
 
 for router_item in routers:

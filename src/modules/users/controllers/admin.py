@@ -9,7 +9,7 @@ from src.core.di import Container
 from src.core.permissions import UserPermission
 from src.core.schemas.common import PaginatedResponse, PaginationParams, ResponseMessage
 from src.modules.users.models import User
-from src.modules.users.schemas import AdminUserProfile, StaffCreate
+from src.modules.users.schemas import AdminUserProfile, StaffCreate, UserProfile
 from src.modules.users.services import AdminUserService
 
 router = APIRouter(prefix="")
@@ -41,3 +41,17 @@ async def get_staff_list(
     pagination: PaginationParams = Depends(),
 ) -> Any:
     return await admin_user_service.get_staff_list(pagination=pagination)
+
+
+@router.get("/users/", response_model=PaginatedResponse[UserProfile])
+@inject
+@check_permission(UserPermission.READ)
+async def get_user_list(
+    _request: Request,
+    admin_user_service: AdminUserService = Depends(
+        Provide[Container.admin_user_service]
+    ),
+    user: User = Depends(get_current_user),
+    pagination: PaginationParams = Depends(),
+) -> Any:
+    return await admin_user_service.get_user_list(pagination=pagination)

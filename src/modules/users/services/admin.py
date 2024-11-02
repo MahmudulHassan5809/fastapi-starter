@@ -14,7 +14,7 @@ from src.core.security.password_handler import PasswordHandler
 from src.core.service.base import BaseService
 from src.modules.users.models import User
 from src.modules.users.repository import UserRepository
-from src.modules.users.schemas import AdminUserProfile, StaffCreate
+from src.modules.users.schemas import AdminUserProfile, StaffCreate, UserProfile
 
 
 class AdminUserService(BaseService):
@@ -48,7 +48,28 @@ class AdminUserService(BaseService):
         )
         last_page = ceil(total / pagination.page_size)
 
-        # Determine the next and previous page numbers
+        next_page = pagination.page + 1 if pagination.page < last_page else None
+        prev_page = pagination.page - 1 if pagination.page > 1 else None
+
+        return PaginatedResponse(
+            data=data,
+            meta=PaginationMeta(
+                total=total,
+                current_page=pagination.page,
+                next_page=next_page,
+                prev_page=prev_page,
+                last_page=last_page,
+            ),
+        )
+
+    async def get_user_list(
+        self, pagination: PaginationParams
+    ) -> PaginatedResponse[UserProfile]:
+        data, total = await self.repository.paginate_filter(
+            filters={"is_staff": False}, pagination=pagination
+        )
+        last_page = ceil(total / pagination.page_size)
+
         next_page = pagination.page + 1 if pagination.page < last_page else None
         prev_page = pagination.page - 1 if pagination.page > 1 else None
 
