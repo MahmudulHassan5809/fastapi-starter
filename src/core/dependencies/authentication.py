@@ -21,7 +21,12 @@ class JWTBearer(HTTPBearer):
             )
 
             key = CacheTag.USER_ACCESS_TOKEN.value.format(user_id=payload.user_id)
-            if token != await Cache.get(key=key) or payload.sub != "access":
+            user_data_key = CacheTag.USER_DATA.value.format(user_id=payload.user_id)
+            if (
+                token != await Cache.get(key=key)
+                or payload.sub != "access"
+                or not await Cache.get(key=user_data_key)
+            ):
                 return False, None
             return True, payload
         except (JWTError, Exception) as err:  # pylint: disable=broad-exception-caught
