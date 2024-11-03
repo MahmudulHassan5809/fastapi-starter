@@ -19,8 +19,8 @@ from src.routers import api_router
 class FastAPIApp:
     def __init__(self) -> None:
         self.app = FastAPI(
-            title="Gold Kinen APP",
-            description="Gold Kinen APP",
+            title="Fast API Starter APP",
+            description="Fast API Starter APP",
             version=settings.VERSION,
             debug=settings.DEBUG,
             docs_url=None if settings.APP_ENV == "prod" else "/docs",
