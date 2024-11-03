@@ -4,7 +4,7 @@ import pytest
 from httpx import AsyncClient
 
 from src.core.cache.cache_manager import Cache
-from src.core.error.codes import INVALID_CRED, INVALID_USER
+from src.core.error.codes import INVALID_CRED
 from src.core.error.format_error import ERROR_MAPPER
 
 

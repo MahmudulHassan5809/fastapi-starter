@@ -7,7 +7,7 @@ from src.core.helpers.enums import ProfileStatusEnum
 from src.core.schemas.common import (
     PaginatedResponse,
     PaginationMeta,
-    PaginationParams,
+    QueryParams,
     ResponseMessage,
 )
 from src.core.security.password_handler import PasswordHandler
@@ -41,10 +41,13 @@ class AdminUserService(BaseService):
         return ResponseMessage(message="Staff created successfully")
 
     async def get_staff_list(
-        self, pagination: PaginationParams
+        self, pagination: QueryParams
     ) -> PaginatedResponse[AdminUserProfile]:
+        filters = {"is_staff": True}
+        if pagination.filter_params:
+            filters.update(pagination.filter_params)
         data, total = await self.repository.paginate_filter(
-            filters={"is_staff": True}, pagination=pagination
+            filters=filters, pagination=pagination
         )
         last_page = ceil(total / pagination.page_size)
 
@@ -63,10 +66,13 @@ class AdminUserService(BaseService):
         )
 
     async def get_user_list(
-        self, pagination: PaginationParams
+        self, pagination: QueryParams
     ) -> PaginatedResponse[UserProfile]:
+        filters = {"is_staff": False}
+        if pagination.filter_params:
+            filters.update(pagination.filter_params)
         data, total = await self.repository.paginate_filter(
-            filters={"is_staff": False}, pagination=pagination
+            filters=filters, pagination=pagination
         )
         last_page = ceil(total / pagination.page_size)
 

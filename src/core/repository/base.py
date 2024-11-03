@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from src.core.db import ModelType, operators_map
-from src.core.schemas.common import PaginationParams
+from src.core.schemas.common import QueryParams
 
 
 class BaseRepository(Generic[ModelType]):
@@ -76,7 +76,7 @@ class BaseRepository(Generic[ModelType]):
     async def paginate_filter(
         self,
         filters: dict[str, Any],
-        pagination: PaginationParams | None = None,
+        pagination: QueryParams | None = None,
         sorting: dict[str, str] | None = None,
         prefetch: tuple[str, ...] | None = None,
         use_or: bool = False,

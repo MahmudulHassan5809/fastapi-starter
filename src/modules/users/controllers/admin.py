@@ -5,9 +5,10 @@ from fastapi import APIRouter, Depends, Request
 
 from src.core.decorators.check_permission import check_permission
 from src.core.dependencies.get_current_user import get_current_user
+from src.core.dependencies.query_param import CommonQueryParam
 from src.core.di import Container
 from src.core.permissions import UserPermission
-from src.core.schemas.common import PaginatedResponse, PaginationParams, ResponseMessage
+from src.core.schemas.common import PaginatedResponse, QueryParams, ResponseMessage
 from src.modules.users.models import User
 from src.modules.users.schemas import AdminUserProfile, StaffCreate, UserProfile
 from src.modules.users.services import AdminUserService
@@ -38,7 +39,7 @@ async def get_staff_list(
         Provide[Container.admin_user_service]
     ),
     user: User = Depends(get_current_user),
-    pagination: PaginationParams = Depends(),
+    pagination: QueryParams = Depends(CommonQueryParam(filter_fields=["status"])),
 ) -> Any:
     return await admin_user_service.get_staff_list(pagination=pagination)
 
@@ -52,6 +53,6 @@ async def get_user_list(
         Provide[Container.admin_user_service]
     ),
     user: User = Depends(get_current_user),
-    pagination: PaginationParams = Depends(),
+    pagination: QueryParams = Depends(),
 ) -> Any:
     return await admin_user_service.get_user_list(pagination=pagination)

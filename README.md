@@ -133,7 +133,7 @@ Located in `src/core/`, this module includes configuration, dependency injection
 - **send_request/**: Functions to send HTTP requests, integrate with third-party APIs, and handle response parsing.
 - **service/**: Core business services that provide reusable, encapsulated business logic for various modules.
 - **config.py**: Centralized configuration file that loads and manages environment variables and application settings.
-- **dependencies/**: Sets up dependency injections for various routes, including authentication, database sessions, and caching. 
+- **dependencies/**: Sets up dependency injections for various routes, including authentication, database sessions, and caching.
 
 ### Users Module
 

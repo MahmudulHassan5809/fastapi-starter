@@ -53,3 +53,14 @@ class PaginationMeta(BaseModel):
 class PaginatedResponse(BaseModel, Generic[T]):
     data: Sequence[T]
     meta: PaginationMeta
+
+
+class QueryParams(BaseModel):
+    page: int = Field(1, ge=1, description="The page number to retrieve")
+    page_size: int = Field(10, ge=1, le=100, description="The number of items per page")
+    search: str | None = Field(None, description="The search query")
+    filter_params: dict[str, Any] | None = None
+
+    @property
+    def skip(self) -> int:
+        return (self.page - 1) * self.page_size

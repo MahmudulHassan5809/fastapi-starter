@@ -18,6 +18,7 @@ class CustomErrorMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             return response
         except SQLAlchemyError as exc:
+            logger.exception("An unexpected error occurred: %s", exc)
             return JSONResponse(
                 status_code=400,
                 content={
