@@ -8,12 +8,13 @@ from src.core.dependencies.get_current_user import get_current_user
 from src.core.dependencies.query_param import CommonQueryParam
 from src.core.di import Container
 from src.core.permissions import UserPermission
+from src.core.routing import LoggingApiRoute
 from src.core.schemas.common import PaginatedResponse, QueryParams, ResponseMessage
 from src.modules.users.models import User
 from src.modules.users.schemas import AdminUserProfile, StaffCreate, UserProfile
 from src.modules.users.services import AdminUserService
 
-router = APIRouter(prefix="")
+router = APIRouter(prefix="", route_class=LoggingApiRoute)
 
 
 @router.post("/staffs/", response_model=ResponseMessage)

@@ -4,10 +4,11 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Request
 
 from src.core.di import Container
+from src.core.routing import LoggingApiRoute
 from src.modules.users.schemas import UserProfile
 from src.modules.users.services import UserService
 
-router = APIRouter(prefix="")
+router = APIRouter(prefix="", route_class=LoggingApiRoute)
 
 
 @router.get("/profile/", response_model=UserProfile)
