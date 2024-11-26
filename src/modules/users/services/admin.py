@@ -5,6 +5,7 @@ from src.core.error.exceptions import ValidationException
 from src.core.error.format_error import ERROR_MAPPER
 from src.core.helpers.enums import ProfileStatusEnum
 from src.core.schemas.common import (
+    FilterOptions,
     PaginatedResponse,
     PaginationMeta,
     QueryParams,
@@ -41,24 +42,28 @@ class AdminUserService(BaseService):
         return ResponseMessage(message="Staff created successfully")
 
     async def get_staff_list(
-        self, pagination: QueryParams
+        self, query_params: QueryParams
     ) -> PaginatedResponse[AdminUserProfile]:
         filters = {"is_staff": True}
-        if pagination.filter_params:
-            filters.update(pagination.filter_params)
+        if query_params.filter_params:
+            filters.update(query_params.filter_params)
         data, total = await self.repository.paginate_filter(
-            filters=filters, pagination=pagination
+            filter_options=FilterOptions(
+                filters=filters,
+                query_params=query_params,
+                sorting=query_params.sorting,
+            )
         )
-        last_page = ceil(total / pagination.page_size)
+        last_page = ceil(total / query_params.page_size)
 
-        next_page = pagination.page + 1 if pagination.page < last_page else None
-        prev_page = pagination.page - 1 if pagination.page > 1 else None
+        next_page = query_params.page + 1 if query_params.page < last_page else None
+        prev_page = query_params.page - 1 if query_params.page > 1 else None
 
         return PaginatedResponse(
             data=data,
             meta=PaginationMeta(
                 total=total,
-                current_page=pagination.page,
+                current_page=query_params.page,
                 next_page=next_page,
                 prev_page=prev_page,
                 last_page=last_page,
@@ -66,24 +71,28 @@ class AdminUserService(BaseService):
         )
 
     async def get_user_list(
-        self, pagination: QueryParams
+        self, query_params: QueryParams
     ) -> PaginatedResponse[UserProfile]:
         filters = {"is_staff": False}
-        if pagination.filter_params:
-            filters.update(pagination.filter_params)
+        if query_params.filter_params:
+            filters.update(query_params.filter_params)
         data, total = await self.repository.paginate_filter(
-            filters=filters, pagination=pagination
+            filter_options=FilterOptions(
+                filters=filters,
+                query_params=query_params,
+                sorting=query_params.sorting,
+            )
         )
-        last_page = ceil(total / pagination.page_size)
+        last_page = ceil(total / query_params.page_size)
 
-        next_page = pagination.page + 1 if pagination.page < last_page else None
-        prev_page = pagination.page - 1 if pagination.page > 1 else None
+        next_page = query_params.page + 1 if query_params.page < last_page else None
+        prev_page = query_params.page - 1 if query_params.page > 1 else None
 
         return PaginatedResponse(
             data=data,
             meta=PaginationMeta(
                 total=total,
-                current_page=pagination.page,
+                current_page=query_params.page,
                 next_page=next_page,
                 prev_page=prev_page,
                 last_page=last_page,

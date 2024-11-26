@@ -60,7 +60,17 @@ class QueryParams(BaseModel):
     page_size: int = Field(10, ge=1, le=100, description="The number of items per page")
     search: str | None = Field(None, description="The search query")
     filter_params: dict[str, Any] | None = None
+    sorting: dict[str, str] | None = None
 
     @property
     def skip(self) -> int:
         return (self.page - 1) * self.page_size
+
+
+class FilterOptions(BaseModel):
+    filters: dict[str, Any]
+    query_params: QueryParams | None = None
+    sorting: dict[str, str] | None = None
+    prefetch: tuple[str, ...] | None = None
+    use_or: bool = False
+    distinct_on: str | None = None

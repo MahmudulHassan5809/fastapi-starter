@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from src.core.db import ModelType, operators_map
-from src.core.schemas.common import QueryParams
+from src.core.schemas.common import FilterOptions, QueryParams
 
 
 class BaseRepository(Generic[ModelType]):
@@ -54,19 +54,18 @@ class BaseRepository(Generic[ModelType]):
 
     async def filter(
         self,
-        filters: dict[str, Any],
-        sorting: dict[str, str] | None = None,
-        prefetch: tuple[str, ...] | None = None,
-        use_or: bool = False,
+        filter_options: FilterOptions,
     ) -> Sequence[ModelType]:
-        query = self._get_query(prefetch)
-        if sorting is not None:
-            query = query.order_by(*self._build_sorting(sorting))
+        query = self._get_query(filter_options.prefetch)
+        if filter_options.distinct_on:
+            query = query.distinct(getattr(self.model, filter_options.distinct_on))
+        if filter_options.sorting is not None:
+            query = query.order_by(*self._build_sorting(filter_options.sorting))
 
         condition = (
-            or_(*self._build_filters(filters))
-            if use_or
-            else and_(*self._build_filters(filters))
+            or_(*self._build_filters(filter_options.filters))
+            if filter_options.use_or
+            else and_(*self._build_filters(filter_options.filters))
         )
         async with self.session() as session:
             db_execute = await session.execute(query.where(condition))
@@ -75,20 +74,17 @@ class BaseRepository(Generic[ModelType]):
 
     async def paginate_filter(
         self,
-        filters: dict[str, Any],
-        pagination: QueryParams | None = None,
-        sorting: dict[str, str] | None = None,
-        prefetch: tuple[str, ...] | None = None,
-        use_or: bool = False,
+        filter_options: FilterOptions,
     ) -> tuple[Sequence[ModelType], int]:
-        query = self._get_query(prefetch)
-        if sorting is not None:
-            query = query.order_by(*self._build_sorting(sorting))
+        query = self._get_query(filter_options.prefetch)
+
+        if filter_options.sorting is not None:
+            query = query.order_by(*self._build_sorting(filter_options.sorting))
 
         condition = (
-            or_(*self._build_filters(filters))
-            if use_or
-            else and_(*self._build_filters(filters))
+            or_(*self._build_filters(filter_options.filters))
+            if filter_options.use_or
+            else and_(*self._build_filters(filter_options.filters))
         )
 
         async with self.session() as session:
@@ -98,8 +94,10 @@ class BaseRepository(Generic[ModelType]):
             total = await session.scalar(total_query) or 0
 
             # Apply pagination if provided
-            if pagination:
-                query = query.offset(pagination.skip).limit(pagination.page_size)
+            if filter_options.pagination:
+                query = query.offset(filter_options.pagination.skip).limit(
+                    filter_options.pagination.page_size
+                )
 
             db_execute = await session.execute(query.where(condition))
             result = db_execute.scalars().all()

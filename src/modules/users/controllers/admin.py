@@ -40,9 +40,9 @@ async def get_staff_list(
         Provide[Container.admin_user_service]
     ),
     user: User = Depends(get_current_user),
-    pagination: QueryParams = Depends(CommonQueryParam(filter_fields=["status"])),
+    query_params: QueryParams = Depends(CommonQueryParam(filter_fields=["status"])),
 ) -> Any:
-    return await admin_user_service.get_staff_list(pagination=pagination)
+    return await admin_user_service.get_staff_list(query_params=query_params)
 
 
 @router.get("/users/", response_model=PaginatedResponse[UserProfile])
@@ -54,6 +54,6 @@ async def get_user_list(
         Provide[Container.admin_user_service]
     ),
     user: User = Depends(get_current_user),
-    pagination: QueryParams = Depends(),
+    query_params: QueryParams = Depends(),
 ) -> Any:
-    return await admin_user_service.get_user_list(pagination=pagination)
+    return await admin_user_service.get_user_list(query_params=query_params)
