@@ -10,6 +10,7 @@ dependencies = [
     "pydantic-settings>=2.10.1",
     "redis>=6.2.0",
     "sqlalchemy>=2.0.41",
+    "structlog>=25.4.0",
 ]
 
 [dependency-groups]
