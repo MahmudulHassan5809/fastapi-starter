@@ -23,7 +23,7 @@ indent_size = 4
 indent_style = tab
 
 # Indentation override for all JS under lib directory
-[lib/**.js]
+[static/js/**.js]
 indent_style = space
 indent_size = 4
 
@@ -31,3 +31,6 @@ indent_size = 4
 [{**.json,.travis.yml,**.yaml}]
 indent_style = space
 indent_size = 4
+
+[*.html]
+quote_type = single

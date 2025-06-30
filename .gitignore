@@ -1,6 +1,16 @@
-.mypy_cache
-.venv
+# Python-generated files
 __pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.qodo
+.mypy_cache
+.ruff_cache
 .env
-.pytest_cache
-cert
+deployment.txt
+.env.docker

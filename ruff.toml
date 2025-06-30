@@ -1,0 +1,52 @@
+src = ["src"]
+target-version = "py312"
+line-length = 100
+
+exclude = [
+    ".git",
+    "__pycache__",
+    "migrations",
+    "alembic",
+    "venv",
+    ".venv",
+    ".ruff_cache",
+    ".mypy_cache",
+]
+
+[format]
+quote-style = "double"
+line-ending = "auto"
+docstring-code-format = true
+
+
+[lint]
+select = [
+    "E",
+    "F",
+    "W",
+    "I",
+    "N",
+    "D",
+    "UP",
+    "B",
+    "SIM",
+    "C4",
+    "RET",
+    "TID",
+    "ARG",
+]
+
+ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D104",
+    "D107",
+    "D103",
+    "D105",
+    "N818",
+    "B008",
+]
+
+[lint.pydocstyle]
+convention = "google"
