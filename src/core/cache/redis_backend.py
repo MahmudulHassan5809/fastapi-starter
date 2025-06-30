@@ -4,7 +4,7 @@ import redis as sync_redis
 import redis.asyncio as redis
 
 
-class RedisBackend:
+class RedisBackendAsync:
     def __init__(self, url: str):
         self.redis_client: redis.Redis = redis.from_url(url=url, decode_responses=True)
 
