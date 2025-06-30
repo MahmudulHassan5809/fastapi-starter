@@ -5,9 +5,10 @@ from collections.abc import Callable
 from typing import Any, TypeVar
 
 from redis import RedisError
-from src.core.cache.redis_backend import RedisBackendAsync, RedisBackendSync
 from src.core.helpers.json_encoder import CustomJSONEncoder
 from src.core.logger import logger
+
+from .redis_backend import RedisBackendAsync, RedisBackendSync
 
 T = TypeVar("T", bound=Callable[..., Any])
 
