@@ -7,6 +7,7 @@ from src.core.error.codes import (
     NO_DATA,
     NOT_AUTHORIZED,
     SERVICE_UNAVAILABLE,
+    TOO_MANY_REQUESTS,
     UNAUTHORIZED_ERROR,
     UPDATE_REQUIRED,
     USER_EXISTS,
@@ -24,6 +25,7 @@ ERROR_MAPPER = {
     NOT_AUTHORIZED: "You are not authorized to perform this action",
     MAINTENANCE_MODE: "Maintenance mode",
     UPDATE_REQUIRED: "Update required",
+    TOO_MANY_REQUESTS: "Too many requests",
 }
 
 
