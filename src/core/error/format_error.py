@@ -8,6 +8,7 @@ from src.core.error.codes import (
     NOT_AUTHORIZED,
     SERVICE_UNAVAILABLE,
     UNAUTHORIZED_ERROR,
+    UPDATE_REQUIRED,
     USER_EXISTS,
 )
 
@@ -22,6 +23,7 @@ ERROR_MAPPER = {
     INVALID_CRED: "Invalid credentials",
     NOT_AUTHORIZED: "You are not authorized to perform this action",
     MAINTENANCE_MODE: "Maintenance mode",
+    UPDATE_REQUIRED: "Update required",
 }
 
 

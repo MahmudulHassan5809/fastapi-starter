@@ -8,7 +8,7 @@ from src.core.error.exceptions import MaintenanceModeException, UpdateRequiredEx
 from src.core.error.format_error import ERROR_MAPPER
 from starlette.middleware.base import BaseHTTPMiddleware
 
-ALLOWED_VERSION_LIST = []
+ALLOWED_VERSION_LIST = ["1.0.0"]
 
 
 class MaintenanceModeMiddleware(BaseHTTPMiddleware):
