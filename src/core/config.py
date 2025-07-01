@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     DEBUG: bool
     VERSION: str
     DATABASE_URL: str
+    TEST_DATABASE_URL: str
     REDIS_URL: str
     PERSIST_REDIS_URL: str
     JWT_SECRET: str
