@@ -3,6 +3,7 @@ from src.core.error.codes import (
     INTERNAL_ERROR,
     INVALID_CRED,
     INVALID_USER,
+    LOCK_ERROR,
     MAINTENANCE_MODE,
     NO_DATA,
     NOT_AUTHORIZED,
@@ -26,6 +27,7 @@ ERROR_MAPPER = {
     MAINTENANCE_MODE: "Maintenance mode",
     UPDATE_REQUIRED: "Update required",
     TOO_MANY_REQUESTS: "Too many requests",
+    LOCK_ERROR: "Lock error",
 }
 
 
