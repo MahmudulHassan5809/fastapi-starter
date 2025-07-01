@@ -1,0 +1,46 @@
+services:
+  app:
+    build: .
+    container_name: fastapi_starter
+    env_file: .env.docker
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    working_dir: /app
+    command:
+      [
+        "fastapi",
+        "dev",
+        "/app/src/main.py",
+        "--port",
+        "8000",
+        "--host",
+        "0.0.0.0",
+        "--reload",
+      ]
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: fastapi_starter
+      POSTGRES_USER: fastapi_starter
+      POSTGRES_PASSWORD: fastapi_starter
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: redis_cache
+    command: redis-server --requirepass foobared
+    ports:
+      - "6380:6379"
+
+volumes:
+  postgres_data:

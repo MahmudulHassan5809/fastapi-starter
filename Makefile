@@ -1,4 +1,4 @@
-.PHONY: reset-db deploy reset-migrations
+.PHONY: reset-db deploy reset-migrations run
 
 SHELL := /bin/bash
 
@@ -12,7 +12,6 @@ reset-db:
 	echo "Postgres User '$$DB_USER' and database '$$DB_NAME' reset successfully."
 
 
-
 reset-migrations:
 	@export $$(grep -v '^#' .env | xargs) && \
 	source .venv/bin/activate && \
@@ -20,3 +19,10 @@ reset-migrations:
 	alembic revision --autogenerate -m "Initial Migrations" && \
 	alembic upgrade head && \
 	echo "Migrations reset successfully."
+
+
+run:
+	@export $$(grep -v '^#' .env | xargs) && \
+	export PYTHONPATH=$(pwd) && \
+	source .venv/bin/activate && \
+	fastapi dev src/main.py
