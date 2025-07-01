@@ -6,7 +6,8 @@ A comprehensive template to kickstart your FastAPI project with best practices, 
 
 - **FastAPI** for quick and efficient API creation.
 - **Celery** for asynchronous task management.
-- **Redis** for caching and as a message broker.
+- **Redis** for caching and as a message broker and lock.
+- **SQS** for backend ground tasks
 - **SQLAlchemy** ORM for database interaction.
 - **Alembic** for database migrations.
 - **Docker** support for containerized development.
@@ -14,6 +15,7 @@ A comprehensive template to kickstart your FastAPI project with best practices, 
 - **Integrated Testing** using Pytest.
 
 ## Project Structure
+
 ```
 .
 ├── .vscode/                     # VSCode workspace settings for this project
@@ -80,7 +82,7 @@ A comprehensive template to kickstart your FastAPI project with best practices, 
 2. **Install dependencies**:
 
    ```bash
-   poetry install
+   uv sync
    ```
 
 3. **Set up environment variables**:
@@ -96,15 +98,64 @@ A comprehensive template to kickstart your FastAPI project with best practices, 
 5. **Start the application**:
 
    ```bash
-   poetry run uvicorn src.main:app --reload
+   make run
    ```
 
 ### Running with Docker
 
 For a fully containerized setup, use Docker Compose:
 
+### Build Docker Image
+
+docker-compose build
+
+### Create `.env.docker` file
+
+    POSTGRES_DB=**********
+    POSTGRES_USER=**********
+    POSTGRES_PASSWORD=**********
+    SECRET_KEY=**********
+
+### Run Application with Docker Compose
+
+```bash
+docker-compose up
+```
+
+### Stop Containers
+
+```bash
+docker-compose down
+```
+
+### View Logs
+
+```bash
+docker-compose logs -f
+```
+
+### Rebuild Docker Image
+
 ```bash
 docker-compose up --build
+```
+
+### Access App Container
+
+```bash
+docker-compose exec app bash
+```
+
+### Upgrade Database (Alembic/SQLAlchemy)
+
+```bash
+docker-compose exec app alembic upgrade head
+```
+
+### Running with Auto-Reload in Development Mode
+
+```bash
+docker-compose up
 ```
 
 ## Application Configuration
@@ -127,11 +178,13 @@ Located in `src/core/`, this module includes configuration, dependency injection
 - **models/**: Contains shared data models, including Pydantic schemas and SQLAlchemy models, providing a consistent data structure.
 - **permissions/**: Defines access control and permission logic, enabling role-based or rule-based access checks.
 - **rate_limiter/**: Manages request rate limiting for APIs, implementing limits to prevent abuse or excessive usage.
+- **redis_lock/** : Redis lock for acquire and release lock
 - **repository/**: Repositories for managing database interactions, with common CRUD operations abstracted for reusability.
 - **schemas/**: Pydantic schemas for data validation, serialization, and deserialization, ensuring data integrity.
 - **security/**: Manages security utilities, including JWT handling, password hashing, and other authentication mechanisms.
 - **send_request/**: Functions to send HTTP requests, integrate with third-party APIs, and handle response parsing.
 - **service/**: Core business services that provide reusable, encapsulated business logic for various modules.
+- **sqs/**: SQS consumer and queue setup.
 - **config.py**: Centralized configuration file that loads and manages environment variables and application settings.
 - **dependencies/**: Sets up dependency injections for various routes, including authentication, database sessions, and caching.
 
@@ -195,10 +248,6 @@ The project includes a robust test suite for unit and integration testing.
 
 - **Unit Tests**: Test individual functions and classes.
 - **Integration Tests**: Test API endpoints and database interactions.
-
-## CI/CD Integration
-
-The project is ready for CI/CD pipelines with GitHub Actions for automated testing, linting, and deployment. The GitHub Actions configuration can be extended to add custom workflows.
 
 ## Contributing
 
