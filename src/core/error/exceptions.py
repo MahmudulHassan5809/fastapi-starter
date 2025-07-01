@@ -5,12 +5,12 @@ class CustomException(Exception):
     code = status.HTTP_502_BAD_GATEWAY
     message = "Bad Gateway"
 
-    def __init__(self, errors: dict[str, str] | None = None, message: str | None = None):
+    def __init__(self, errors: dict[str, str] | str | None = None, message: str | None = None):
         self.errors = errors
         self.message = message or self.message
 
     def __str__(self) -> str:
-        return f"{self.message} -> {self.errors.get('en') if self.errors else ''}"
+        return f"{self.message} -> {self.errors}"
 
 
 class DatabaseError(CustomException):
@@ -41,3 +41,8 @@ class RequestError(CustomException):
 class MaintenanceModeException(CustomException):
     code = status.HTTP_403_FORBIDDEN
     message = "Maintenance Mode"
+
+
+class UpdateRequiredException(CustomException):
+    code = status.HTTP_403_FORBIDDEN
+    message = "Update Required"

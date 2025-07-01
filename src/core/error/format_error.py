@@ -3,6 +3,7 @@ from src.core.error.codes import (
     INTERNAL_ERROR,
     INVALID_CRED,
     INVALID_USER,
+    MAINTENANCE_MODE,
     NO_DATA,
     NOT_AUTHORIZED,
     SERVICE_UNAVAILABLE,
@@ -20,6 +21,7 @@ ERROR_MAPPER = {
     INTERNAL_ERROR: "Internal Server Error",
     INVALID_CRED: "Invalid credentials",
     NOT_AUTHORIZED: "You are not authorized to perform this action",
+    MAINTENANCE_MODE: "Maintenance mode",
 }
 
 
