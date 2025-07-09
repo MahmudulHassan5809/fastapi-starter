@@ -1,4 +1,4 @@
-.PHONY: reset-db deploy reset-migrations run
+.PHONY: reset-db deploy reset-migrations run migrations
 
 SHELL := /bin/bash
 
@@ -15,10 +15,22 @@ reset-db:
 reset-migrations:
 	@export $$(grep -v '^#' .env | xargs) && \
 	source .venv/bin/activate && \
-	rm -rf alembic/versions/* && \
+	rm -rf migrations/versions/* && \
 	alembic revision --autogenerate -m "Initial Migrations" && \
 	alembic upgrade head && \
 	echo "Migrations reset successfully."
+
+
+migrations:
+	@export $$(grep -v '^#' .env | xargs) && \
+	source .venv/bin/activate && \
+	if [ -z "$(msg)" ]; then \
+		echo "Error: Please provide a commit message with msg=..."; \
+		exit 1; \
+	fi && \
+	alembic revision --autogenerate -m "$(msg)" && \
+	alembic upgrade head && \
+	echo "Migrations created and applied."
 
 
 run:
