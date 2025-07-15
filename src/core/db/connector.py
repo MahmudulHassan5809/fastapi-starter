@@ -2,6 +2,7 @@ import contextlib
 from collections.abc import AsyncIterator
 from typing import TypeVar
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -39,12 +40,13 @@ class Database:
         self._sessionmaker = None
 
     @contextlib.asynccontextmanager
-    async def session(self) -> AsyncIterator[AsyncSession]:
+    async def session(self, tenant: str) -> AsyncIterator[AsyncSession]:
         if self._sessionmaker is None:
             raise DatabaseError(message="DatabaseSessionManager is not initialized")
 
         session = self._sessionmaker()
         try:
+            await session.execute(text(f"SET search_path TO {tenant}, public"))
             yield session
         except Exception as err:
             await session.rollback()
